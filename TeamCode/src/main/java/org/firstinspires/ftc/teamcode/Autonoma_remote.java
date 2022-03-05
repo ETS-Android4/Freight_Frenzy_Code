@@ -50,10 +50,7 @@ public class Autonoma_remote extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
-    tfod.loadModelFromAsset(java.lang.String assetName,
-                       java.lang.String... labels)
-
+    //hello
     private BNO055IMU imu;
 
     // movement motors
