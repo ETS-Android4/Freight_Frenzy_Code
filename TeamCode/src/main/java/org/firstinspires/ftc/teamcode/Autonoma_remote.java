@@ -30,6 +30,7 @@ public class Autonoma_remote extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "stanga-jos";
     private static final String LABEL_SECOND_ELEMENT = "mijloc-mijloc";
     private static final String LABEL_THIRD_ELEMENT = "dreapta-sus";
+
     /*
     0 stanga-jos
     1 mijloc-mijloc
@@ -50,7 +51,6 @@ public class Autonoma_remote extends LinearOpMode {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-    //hello
     private BNO055IMU imu;
 
     // movement motors
@@ -89,7 +89,7 @@ public class Autonoma_remote extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        initGyro();
+//        initGyro();
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -168,55 +168,55 @@ public class Autonoma_remote extends LinearOpMode {
         }
     }
 
-    public void extindere(int level){
-        if(level==1){
-            //nivel jos
-            glisiera.setTargetPosition(1850);
-            glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            glisiera.setPower(1);
-
-            extindere.setTargetPosition(1200);
-            extindere.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extindere.setPower(0.8);
-            telemetry.addData("ajuns la nivel 3","");
-        }
-
-        if(level==2){
-            //nivel mijloc
-        }
-
-        if(level==3){
-            //nivel sus
-        }
-    }
-    public void retragere(){
-        extindere.setTargetPosition(10);
-        extindere.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extindere.setPower(0.8);
-
-        glisiera.setTargetPosition(10);
-        glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        glisiera.setPower(1);
-    }
-
-    public void car_navigation(int direction){
-        if(distanta.getDistance(DistanceUnit.CM)<=36.5){
-            stangafata.setPower(0);
-            dreaptafata.setPower(0);
-            stangaspate.setPower(0);
-            dreaptaspate.setPower(0);
-            carusel(direction);
-        }
-
-    }
-    public void carusel(int direction){
-        //partea albastra
-        carusel.setPosition(direction);
-        //+ rosu
-        //- albastru
-        sleep(1900);
-        carusel.setPosition(0.5);
-    }
+//    public void extindere(int level){
+//        if(level==1){
+//            //nivel jos
+//            glisiera.setTargetPosition(1850);
+//            glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            glisiera.setPower(1);
+//
+//            extindere.setTargetPosition(1200);
+//            extindere.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            extindere.setPower(0.8);
+//            telemetry.addData("ajuns la nivel 3","");
+//        }
+//
+//        if(level==2){
+//            //nivel mijloc
+//        }
+//
+//        if(level==3){
+//            //nivel sus
+//        }
+//    }
+//    public void retragere(){
+//        extindere.setTargetPosition(10);
+//        extindere.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        extindere.setPower(0.8);
+//
+//        glisiera.setTargetPosition(10);
+//        glisiera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        glisiera.setPower(1);
+//    }
+//
+//    public void car_navigation(int direction){
+//        if(distanta.getDistance(DistanceUnit.CM)<=36.5){
+//            stangafata.setPower(0);
+//            dreaptafata.setPower(0);
+//            stangaspate.setPower(0);
+//            dreaptaspate.setPower(0);
+//            carusel(direction);
+//        }
+//
+//    }
+//    public void carusel(int direction){
+//        //partea albastra
+//        carusel.setPosition(direction);
+//        //+ rosu
+//        //- albastru
+//        sleep(1900);
+//        carusel.setPosition(0.5);
+//    }
 
     private void caz_stanga() {
 
@@ -299,238 +299,238 @@ public class Autonoma_remote extends LinearOpMode {
     }
 
 
-    /*
-    This function's purpose is simply to drive forward or backward.
-    To drive backward, simply make the centimeter input negative.
-     */
-    public void moveToPosition(double cm, double speed){
-        //
-        double inches = cm / 2.54;
-        int move = (int)(Math.round(inches*conversion));
-        //
-        stangaspate.setTargetPosition(stangaspate.getCurrentPosition() + move);
-        stangafata.setTargetPosition(stangafata.getCurrentPosition() + move);
-        dreaptaspate.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
-        dreaptafata.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
-        //
-        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //
-        stangafata.setPower(speed);
-        dreaptafata.setPower(speed);
-        stangaspate.setPower(speed);
-        dreaptaspate.setPower(speed);
-        //
-        while (stangafata.isBusy() && dreaptafata.isBusy() && stangaspate.isBusy() && dreaptaspate.isBusy()){
-            if (exit){
-                dreaptafata.setPower(0);
-                stangafata.setPower(0);
-                dreaptaspate.setPower(0);
-                stangaspate.setPower(0);
-                return;
-            }
-        }
-        dreaptafata.setPower(0);
-        stangafata.setPower(0);
-        dreaptaspate.setPower(0);
-        stangaspate.setPower(0);
-        return;
-    }
-
-/*
-    This function uses the Expansion Hub IMU Integrated Gyro to turn a precise number of degrees (+/- 5).
-    Degrees should always be positive, make speedDirection negative to turn left.
-     */
-    public void turnWithGyro(double degrees, double speedDirection){
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double yaw = -angles.firstAngle;//make this negative
-        telemetry.addData("Speed Direction", speedDirection);
-        telemetry.addData("Yaw", yaw);
-        telemetry.update();
-        //
-        telemetry.addData("stuff", speedDirection);
-        telemetry.update();
-        //
-        double first;
-        double second;
-        if (speedDirection > 0){//set target positions
-            if (degrees > 10){
-                first = (degrees - 10) + devertify(yaw);
-            } else {
-                first = devertify(yaw);
-            }
-            second = degrees + devertify(yaw);
-        } else {
-            if (degrees > 10){
-                first = devertify(-(degrees - 10) + devertify(yaw));
-            } else {
-                first = devertify(yaw);
-            }
-            second = devertify(-degrees + devertify(yaw));
-        }
-        //
-        double firsta = convertify(first - 5);//175
-        double firstb = convertify(first + 5);//-175
-        turnWithEncoder(speedDirection);
-        if (Math.abs(firsta - firstb) < 11) {
-            while (!(firsta < yaw && yaw < firstb) && opModeIsActive()) {//within range?
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
-                yaw = -angles.firstAngle;
-                telemetry.addData("Position", yaw);
-                telemetry.addData("first before", first);
-                telemetry.addData("first after", convertify(first));
-                telemetry.update();
-            }
-        }else{
-            //
-            while (!((firsta < yaw && yaw < 180) || (-180 < yaw && yaw < firstb)) && opModeIsActive()) {//within range?
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
-                yaw = -angles.firstAngle;
-                telemetry.addData("Position", yaw);
-                telemetry.addData("first before", first);
-                telemetry.addData("first after", convertify(first));
-                telemetry.update();
-            }
-        }
-        //
-        double seconda = convertify(second - 5);//175
-        double secondb = convertify(second + 5);//-175
-        //
-        turnWithEncoder(speedDirection / 3);
-        //
-        if (Math.abs(seconda - secondb) < 11) {
-            while (!(seconda < yaw && yaw < secondb) && opModeIsActive()) {//within range?
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
-                yaw = -angles.firstAngle;
-                telemetry.addData("Position", yaw);
-                telemetry.addData("second before", second);
-                telemetry.addData("second after", convertify(second));
-                telemetry.update();
-            }
-            while (!((seconda < yaw && yaw < 180) || (-180 < yaw && yaw < secondb)) && opModeIsActive()) {//within range?
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
-                yaw = -angles.firstAngle;
-                telemetry.addData("Position", yaw);
-                telemetry.addData("second before", second);
-                telemetry.addData("second after", convertify(second));
-                telemetry.update();
-            }
-            stangafata.setPower(0);
-            dreaptafata.setPower(0);
-            stangaspate.setPower(0);
-            dreaptaspate.setPower(0);
-        }
-        //</editor-fold>
-        //
-        stangafata.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        dreaptafata.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        stangaspate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        dreaptaspate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-    //
-    /*
-    This function uses the encoders to strafe left or right.
-    Negative input for inches results in left strafing.
-     */
-    public void strafeToPosition(double cm, double speed){
-        //
-        double inches = cm / 2.54;
-        int move = (int)(Math.round(inches * cpi * meccyBias));
-        //
-
-        stangafata.setTargetPosition(stangafata.getCurrentPosition() + move);
-        dreaptafata.setTargetPosition(dreaptafata.getCurrentPosition() - move);
-        stangaspate.setTargetPosition(stangaspate.getCurrentPosition() - move);
-        dreaptaspate.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
-
-        //
-        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //
-        stangafata.setPower(speed);
-        dreaptafata.setPower(speed);
-        stangaspate.setPower(speed);
-        dreaptaspate.setPower(speed);
-        //
-        while (stangafata.isBusy() && dreaptafata.isBusy() && stangaspate.isBusy() && dreaptaspate.isBusy()){}
-        stangafata.setPower(0);
-        dreaptafata.setPower(0);
-        stangaspate.setPower(0);
-        dreaptaspate.setPower(0);
-
-        return;
-    }
-
-    /*
-    These functions are used in the turnWithGyro function to ensure inputs
-    are interpreted properly.
-     */
-    public double devertify(double degrees){
-        if (degrees < 0){
-            degrees = degrees + 360;
-        }
-        return degrees;
-    }
-    public double convertify(double degrees){
-        if (degrees > 179){
-            degrees = -(360 - degrees);
-        } else if(degrees < -180){
-            degrees = 360 + degrees;
-        } else if(degrees > 360){
-            degrees = degrees - 360;
-        }
-        return degrees;
-    }
-
-
-    public void initGyro(){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //parameters.calibrationDataFile = "GyroCal.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = false;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        //
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-    }
-
-
-    public void turnWithEncoder(double input){
-        stangafata.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        dreaptafata.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        stangaspate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        dreaptaspate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //
-        stangafata.setPower(input);
-        dreaptafata.setPower(-input);
-        stangaspate.setPower(input);
-        dreaptaspate.setPower(-input);
-    }
-
-    private void reversePolarity(){
-        stangafata.setDirection(DcMotorSimple.Direction.REVERSE);
-        dreaptafata.setDirection(DcMotorSimple.Direction.FORWARD);
-        stangaspate.setDirection(DcMotorSimple.Direction.REVERSE);
-        dreaptaspate.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-    }
+//    /*
+//    This function's purpose is simply to drive forward or backward.
+//    To drive backward, simply make the centimeter input negative.
+//     */
+//    public void moveToPosition(double cm, double speed){
+//        //
+//        double inches = cm / 2.54;
+//        int move = (int)(Math.round(inches*conversion));
+//        //
+//        stangaspate.setTargetPosition(stangaspate.getCurrentPosition() + move);
+//        stangafata.setTargetPosition(stangafata.getCurrentPosition() + move);
+//        dreaptaspate.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
+//        dreaptafata.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
+//        //
+//        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        //
+//        stangafata.setPower(speed);
+//        dreaptafata.setPower(speed);
+//        stangaspate.setPower(speed);
+//        dreaptaspate.setPower(speed);
+//        //
+//        while (stangafata.isBusy() && dreaptafata.isBusy() && stangaspate.isBusy() && dreaptaspate.isBusy()){
+//            if (exit){
+//                dreaptafata.setPower(0);
+//                stangafata.setPower(0);
+//                dreaptaspate.setPower(0);
+//                stangaspate.setPower(0);
+//                return;
+//            }
+//        }
+//        dreaptafata.setPower(0);
+//        stangafata.setPower(0);
+//        dreaptaspate.setPower(0);
+//        stangaspate.setPower(0);
+//        return;
+//    }
+//
+///*
+//    This function uses the Expansion Hub IMU Integrated Gyro to turn a precise number of degrees (+/- 5).
+//    Degrees should always be positive, make speedDirection negative to turn left.
+//     */
+//    public void turnWithGyro(double degrees, double speedDirection){
+//        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double yaw = -angles.firstAngle;//make this negative
+//        telemetry.addData("Speed Direction", speedDirection);
+//        telemetry.addData("Yaw", yaw);
+//        telemetry.update();
+//        //
+//        telemetry.addData("stuff", speedDirection);
+//        telemetry.update();
+//        //
+//        double first;
+//        double second;
+//        if (speedDirection > 0){//set target positions
+//            if (degrees > 10){
+//                first = (degrees - 10) + devertify(yaw);
+//            } else {
+//                first = devertify(yaw);
+//            }
+//            second = degrees + devertify(yaw);
+//        } else {
+//            if (degrees > 10){
+//                first = devertify(-(degrees - 10) + devertify(yaw));
+//            } else {
+//                first = devertify(yaw);
+//            }
+//            second = devertify(-degrees + devertify(yaw));
+//        }
+//        //
+//        double firsta = convertify(first - 5);//175
+//        double firstb = convertify(first + 5);//-175
+//        turnWithEncoder(speedDirection);
+//        if (Math.abs(firsta - firstb) < 11) {
+//            while (!(firsta < yaw && yaw < firstb) && opModeIsActive()) {//within range?
+//                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//                gravity = imu.getGravity();
+//                yaw = -angles.firstAngle;
+//                telemetry.addData("Position", yaw);
+//                telemetry.addData("first before", first);
+//                telemetry.addData("first after", convertify(first));
+//                telemetry.update();
+//            }
+//        }else{
+//            //
+//            while (!((firsta < yaw && yaw < 180) || (-180 < yaw && yaw < firstb)) && opModeIsActive()) {//within range?
+//                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//                gravity = imu.getGravity();
+//                yaw = -angles.firstAngle;
+//                telemetry.addData("Position", yaw);
+//                telemetry.addData("first before", first);
+//                telemetry.addData("first after", convertify(first));
+//                telemetry.update();
+//            }
+//        }
+//        //
+//        double seconda = convertify(second - 5);//175
+//        double secondb = convertify(second + 5);//-175
+//        //
+//        turnWithEncoder(speedDirection / 3);
+//        //
+//        if (Math.abs(seconda - secondb) < 11) {
+//            while (!(seconda < yaw && yaw < secondb) && opModeIsActive()) {//within range?
+//                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//                gravity = imu.getGravity();
+//                yaw = -angles.firstAngle;
+//                telemetry.addData("Position", yaw);
+//                telemetry.addData("second before", second);
+//                telemetry.addData("second after", convertify(second));
+//                telemetry.update();
+//            }
+//            while (!((seconda < yaw && yaw < 180) || (-180 < yaw && yaw < secondb)) && opModeIsActive()) {//within range?
+//                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//                gravity = imu.getGravity();
+//                yaw = -angles.firstAngle;
+//                telemetry.addData("Position", yaw);
+//                telemetry.addData("second before", second);
+//                telemetry.addData("second after", convertify(second));
+//                telemetry.update();
+//            }
+//            stangafata.setPower(0);
+//            dreaptafata.setPower(0);
+//            stangaspate.setPower(0);
+//            dreaptaspate.setPower(0);
+//        }
+//        //</editor-fold>
+//        //
+//        stangafata.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        dreaptafata.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        stangaspate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        dreaptaspate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//    }
+//    //
+//    /*
+//    This function uses the encoders to strafe left or right.
+//    Negative input for inches results in left strafing.
+//     */
+//    public void strafeToPosition(double cm, double speed){
+//        //
+//        double inches = cm / 2.54;
+//        int move = (int)(Math.round(inches * cpi * meccyBias));
+//        //
+//
+//        stangafata.setTargetPosition(stangafata.getCurrentPosition() + move);
+//        dreaptafata.setTargetPosition(dreaptafata.getCurrentPosition() - move);
+//        stangaspate.setTargetPosition(stangaspate.getCurrentPosition() - move);
+//        dreaptaspate.setTargetPosition(dreaptaspate.getCurrentPosition() + move);
+//
+//        //
+//        stangafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptafata.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        stangaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        dreaptaspate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        //
+//        stangafata.setPower(speed);
+//        dreaptafata.setPower(speed);
+//        stangaspate.setPower(speed);
+//        dreaptaspate.setPower(speed);
+//        //
+//        while (stangafata.isBusy() && dreaptafata.isBusy() && stangaspate.isBusy() && dreaptaspate.isBusy()){}
+//        stangafata.setPower(0);
+//        dreaptafata.setPower(0);
+//        stangaspate.setPower(0);
+//        dreaptaspate.setPower(0);
+//
+//        return;
+//    }
+//
+//    /*
+//    These functions are used in the turnWithGyro function to ensure inputs
+//    are interpreted properly.
+//     */
+//    public double devertify(double degrees){
+//        if (degrees < 0){
+//            degrees = degrees + 360;
+//        }
+//        return degrees;
+//    }
+//    public double convertify(double degrees){
+//        if (degrees > 179){
+//            degrees = -(360 - degrees);
+//        } else if(degrees < -180){
+//            degrees = 360 + degrees;
+//        } else if(degrees > 360){
+//            degrees = degrees - 360;
+//        }
+//        return degrees;
+//    }
+//
+//
+//    public void initGyro(){
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        //parameters.calibrationDataFile = "GyroCal.json"; // see the calibration sample opmode
+//        parameters.loggingEnabled      = false;
+//        parameters.loggingTag          = "IMU";
+//        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//        //
+//        imu = hardwareMap.get(BNO055IMU.class, "imu");
+//        imu.initialize(parameters);
+//    }
+//
+//
+//    public void turnWithEncoder(double input){
+//        stangafata.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        dreaptafata.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        stangaspate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        dreaptaspate.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        //
+//        stangafata.setPower(input);
+//        dreaptafata.setPower(-input);
+//        stangaspate.setPower(input);
+//        dreaptaspate.setPower(-input);
+//    }
+//
+//    private void reversePolarity(){
+//        stangafata.setDirection(DcMotorSimple.Direction.REVERSE);
+//        dreaptafata.setDirection(DcMotorSimple.Direction.FORWARD);
+//        stangaspate.setDirection(DcMotorSimple.Direction.REVERSE);
+//        dreaptaspate.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//
+//    }
 
     /**
      * Initialize the Vuforia localization engine.
